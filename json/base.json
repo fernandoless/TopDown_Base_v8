@@ -1,0 +1,2210 @@
+{
+  "versao": "2.0.0",
+  "sobre": "Dados de craft para mídias e players musicais. IDs em português, ordem cronológica, preços em Fitoedas, valores de venda, raridade por gênero, tiers de players, eventos semanais e lojistas especializados. Inclui selos de gênero para mídias graváveis.",
+  "economia": {
+    "moeda": "Fitoedas",
+    "precos": {
+      "formula_venda": "venda = max(venda_minima, floor(preco * fator_venda))",
+      "fator_venda": 0.5,
+      "venda_minima": 1,
+      "arredondamento": "floor",
+      "desc": "Define como o valor de venda base de qualquer item é calculado a partir do preço."
+    },
+    "avaliacao_mercado": {
+      "formula": "valor_avaliado = max(1, floor(valor_base_venda * multiplicador_genero * (1 + bonus_evento) * (1 + bonus_lojista)))",
+      "definicoes": {
+        "valor_base_venda": "Campo 'venda' da mídia usada como ponto de partida do cálculo.",
+        "multiplicador_genero": "Multiplicador 'valor_mod' proveniente do tier de raridade do gênero ('genero').",
+        "bonus_evento": "Bônus aplicado caso haja um evento ativo para o gênero.",
+        "bonus_lojista": "Bônus de lojas especializadas e reputação com o lojista."
+      },
+      "desc": "Determina o valor de avaliação ao vender mídias etiquetadas, considerando gênero, eventos e loja."
+    },
+    "oferta_demanda": {
+      "escala": "semanal",
+      "generos": {
+        "jazz": {
+          "status": "escasso",
+          "mod": 0.15,
+          "desc": "Aumenta o valor de avaliação de Jazz nesta semana."
+        },
+        "punk": {
+          "status": "abundante",
+          "mod": -0.1,
+          "desc": "Reduz o valor de avaliação de Punk nesta semana."
+        }
+      },
+      "aplicacao": "valor_avaliado *= (1 + mod)",
+      "desc": "Camada dinâmica de mercado por gênero (escassez/abundância) que afeta o valor de avaliação."
+    },
+    "reputacao": {
+      "escala": [
+        0,
+        100
+      ],
+      "tiers": [
+        {
+          "min": 0,
+          "rotulo": "desconhecido",
+          "bonus_lojista_extra": 0.0,
+          "desc": "Sem histórico com o lojista."
+        },
+        {
+          "min": 15,
+          "rotulo": "conhecido",
+          "bonus_lojista_extra": 0.03,
+          "desc": "Cliente ocasional."
+        },
+        {
+          "min": 35,
+          "rotulo": "cliente",
+          "bonus_lojista_extra": 0.07,
+          "desc": "Compra e vende com alguma frequência."
+        },
+        {
+          "min": 60,
+          "rotulo": "fregues",
+          "bonus_lojista_extra": 0.12,
+          "desc": "Relacionamento de confiança."
+        },
+        {
+          "min": 85,
+          "rotulo": "vip",
+          "bonus_lojista_extra": 0.2,
+          "desc": "Tratamento preferencial e melhores ofertas."
+        }
+      ],
+      "aplicacao": "valor_avaliado *= (1 + bonus_lojista_extra)",
+      "desc": "Bônus adicional baseado no relacionamento do jogador com o lojista."
+    },
+    "gravacao": {
+      "chance_falha_base": 0.05,
+      "penalidade_qualidade": 0.2,
+      "mitigacoes": {
+        "bancada_fitas": 0.02,
+        "player_pro": 0.02,
+        "insumo_premium": 0.03
+      },
+      "desc": "Probabilidade de falha/ruído na gravação e mitigadores (bancada, equipamento, insumos)."
+    },
+    "estoque": {
+      "limites": {
+        "mochila": 30,
+        "bau": 200
+      },
+      "custo_diario_excedente": 0.02,
+      "desc": "Restrições e custos de manter itens acima do limite nos inventários."
+    },
+    "observacoes": [
+      "Para aplicar selos: use 'generos_suportados' da mídia para validar 'selo_genero'.",
+      "'drop_mod' dos gêneros afeta spawn/loot; pode ser usado no gerador de mundo/eventos."
+    ],
+    "desc": "Configurações econômicas do jogo: preços, avaliação, mercado dinâmico, risco e estoque."
+  },
+  "raridade_genero": {
+    "tiers": {
+      "comum": {
+        "drop_mod": 1.0,
+        "valor_mod": 1.0
+      },
+      "incomum": {
+        "drop_mod": 0.75,
+        "valor_mod": 1.2
+      },
+      "raro": {
+        "drop_mod": 0.5,
+        "valor_mod": 1.4
+      },
+      "muito_raro": {
+        "drop_mod": 0.3,
+        "valor_mod": 1.6
+      },
+      "epico": {
+        "drop_mod": 0.15,
+        "valor_mod": 2.0
+      }
+    },
+    "generos": [
+      {
+        "id": "pop",
+        "nome": "Pop",
+        "raridade": "comum"
+      },
+      {
+        "id": "rock",
+        "nome": "Rock",
+        "raridade": "comum"
+      },
+      {
+        "id": "rnb",
+        "nome": "R&B",
+        "raridade": "incomum"
+      },
+      {
+        "id": "hiphop",
+        "nome": "Hip Hop",
+        "raridade": "incomum"
+      },
+      {
+        "id": "metal",
+        "nome": "Metal",
+        "raridade": "raro"
+      },
+      {
+        "id": "punk",
+        "nome": "Punk",
+        "raridade": "incomum"
+      },
+      {
+        "id": "hardcore",
+        "nome": "Hardcore",
+        "raridade": "raro"
+      },
+      {
+        "id": "jazz",
+        "nome": "Jazz",
+        "raridade": "raro"
+      },
+      {
+        "id": "blues",
+        "nome": "Blues",
+        "raridade": "raro"
+      },
+      {
+        "id": "mpb",
+        "nome": "Música Brasileira",
+        "raridade": "comum"
+      }
+    ],
+    "aplicacao": {
+      "alvos": [
+        "avaliacao_midia",
+        "bonus_evento",
+        "preco_loja_especializada"
+      ],
+      "nota": "valor_mod multiplica o valor de avaliação de mídias/fitas etiquetadas; drop_mod afeta chance de spawn de conteúdos daquele gênero."
+    }
+  },
+  "eventos_semanais": [
+    {
+      "id": "semana_do_jazz",
+      "nome": "Semana do Jazz",
+      "genero": "jazz",
+      "bonus_valor_mod": 0.2,
+      "desc": "+0.2 no valor de avaliação para mídias com selo Jazz; mais transmissões de clubes à noite."
+    },
+    {
+      "id": "festival_punk",
+      "nome": "Festival Punk",
+      "genero": "punk",
+      "bonus_valor_mod": 0.2,
+      "desc": "+0.2 no valor e mais shows de rua."
+    },
+    {
+      "id": "rota_do_blues",
+      "nome": "Rota do Blues",
+      "genero": "blues",
+      "bonus_valor_mod": 0.2,
+      "desc": "Buskers de blues aparecem em bairros específicos."
+    }
+  ],
+  "lojistas_especializados": [
+    {
+      "id": "sebo_do_jazz",
+      "nome": "Sebo do Jazz",
+      "genero_foco": "jazz",
+      "valor_mod_extra": 0.25,
+      "desc": "Paga melhor por mídias etiquetadas como Jazz."
+    },
+    {
+      "id": "banca_punk",
+      "nome": "Banca Punk",
+      "genero_foco": "punk",
+      "valor_mod_extra": 0.25,
+      "desc": "Trocas agressivas por cassetes punk/HC."
+    },
+    {
+      "id": "colecionador_blues",
+      "nome": "Colecionador de Blues",
+      "genero_foco": "blues",
+      "valor_mod_extra": 0.35,
+      "desc": "Compra itens raros de blues e shellac 78."
+    }
+  ],
+  "recursos": [
+    {
+      "id": "plastico",
+      "nome": "Plástico",
+      "categoria": "material_base",
+      "desc": "Carcaças, painéis, engrenagens leves."
+    },
+    {
+      "id": "metal_comum",
+      "nome": "Metal Comum",
+      "categoria": "material_base",
+      "desc": "Chassi, eixos, molas, fio de aço."
+    },
+    {
+      "id": "resina_shellac",
+      "nome": "Resina (Shellac/Celluloide)",
+      "categoria": "material_base",
+      "desc": "Base de discos 78 rpm e cilindros antigos."
+    },
+    {
+      "id": "fio_cobre",
+      "nome": "Fio de Cobre",
+      "categoria": "eletrico",
+      "desc": "Bobinas, antenas e cabeamento."
+    },
+    {
+      "id": "correia_borracha",
+      "nome": "Correia de Borracha",
+      "categoria": "mecanico",
+      "desc": "Transmissão de tração em toca-fitas/discos."
+    },
+    {
+      "id": "vidro_acrilico",
+      "nome": "Vidro/Acrílico",
+      "categoria": "acabamento",
+      "desc": "Janelas, visores e proteção de painéis."
+    },
+    {
+      "id": "agulha_ceramica",
+      "nome": "Agulha/Cerâmica",
+      "categoria": "leitura_vinil",
+      "desc": "Ponta de leitura para sulcos."
+    },
+    {
+      "id": "polimero_magnetico",
+      "nome": "Polímero Magnético (Fita)",
+      "categoria": "midia",
+      "desc": "Base de fitas analógicas e digitais."
+    },
+    {
+      "id": "vinil_pvc",
+      "nome": "Vinil (PVC)",
+      "categoria": "midia",
+      "desc": "Matéria-prima de LP/45 rpm."
+    },
+    {
+      "id": "policarbonato",
+      "nome": "Policarbonato (CD/DVD/SACD)",
+      "categoria": "midia",
+      "desc": "Discos ópticos."
+    },
+    {
+      "id": "silicio_pcb",
+      "nome": "Silício/PCB",
+      "categoria": "eletronica",
+      "desc": "Circuitos, DACs/ADCs, controle."
+    },
+    {
+      "id": "motor_dc",
+      "nome": "Motor DC",
+      "categoria": "mecanico",
+      "desc": "Tração para fitas e pratos."
+    },
+    {
+      "id": "modulo_leitor",
+      "nome": "Módulo Leitor",
+      "categoria": "leitura",
+      "desc": "Subconjunto de leitura/gravação para diferentes mídias.",
+      "variantes": [
+        {
+          "id": "cabecote_magnetico",
+          "nome": "Cabeçote Magnético (Fita/Fio)"
+        },
+        {
+          "id": "cabecote_helicoidal",
+          "nome": "Cabeçote Helicoidal (DAT)"
+        },
+        {
+          "id": "pickup_optico",
+          "nome": "Pickup Óptico (CD/DVD/SACD/MD)"
+        },
+        {
+          "id": "capsula_ceramica",
+          "nome": "Cápsula Cerâmica (Discos)"
+        },
+        {
+          "id": "capsula_magnetica",
+          "nome": "Cápsula Magnética (Discos)"
+        }
+      ]
+    },
+    {
+      "id": "bateria_energia",
+      "nome": "Bateria/Energia",
+      "categoria": "energia",
+      "desc": "Fontes e acumuladores."
+    },
+    {
+      "id": "transdutor_audio",
+      "nome": "Transdutor de Áudio (Falante/Fone)",
+      "categoria": "audio",
+      "desc": "Saída/entrada de áudio."
+    }
+  ],
+  "bancadas": [
+    {
+      "id": "bancada_audio",
+      "nome": "Bancada de Áudio/Vitrola",
+      "desc": "Mesa para montagem e ajustes de áudio analógico (discos, toca-discos, gramofones)."
+    },
+    {
+      "id": "bancada_fitas",
+      "nome": "Bancada de Fitas",
+      "desc": "Mesa dedicada a fitas e cabeçotes magnéticos (cassete, rolo, DAT, DCC)."
+    },
+    {
+      "id": "bancada_eletronicos",
+      "nome": "Bancada de Eletrônicos",
+      "desc": "Bancada de eletrônica digital/óptica (CD, MiniDisc, MP3, computadores, celulares)."
+    }
+  ],
+  "players": [
+    {
+      "id": "fonografo_cilindros",
+      "nome": "Fonógrafo de Cilindros",
+      "tipo": "player",
+      "bancada": "bancada_audio",
+      "ano_inicial": 1888,
+      "decada": "1880s",
+      "preco": 14,
+      "venda": 6,
+      "desc": "Reprodução mecânica de cilindros de cera/celuloide.",
+      "essenciais": [
+        {
+          "recurso": "metal_comum",
+          "qtd": 4
+        },
+        {
+          "recurso": "agulha_ceramica",
+          "qtd": 2
+        },
+        {
+          "recurso": "correia_borracha",
+          "qtd": 2
+        }
+      ],
+      "desbloqueios": [
+        "reproduzir_cilindro"
+      ],
+      "tiers": [
+        {
+          "id": "basico",
+          "rotulo": "Básico",
+          "preco": 14,
+          "venda": 6,
+          "notas": "Corneta pequena, mola"
+        },
+        {
+          "id": "bom",
+          "rotulo": "Bom",
+          "preco": 20,
+          "venda": 10,
+          "notas": "Corneta média, estabilidade"
+        },
+        {
+          "id": "pro",
+          "rotulo": "Pro",
+          "preco": 30,
+          "venda": 14,
+          "notas": "Corneta grande, braço ajustável"
+        }
+      ]
+    },
+    {
+      "id": "gramofone_78",
+      "nome": "Gramofone 78 rpm (Acústico)",
+      "tipo": "player",
+      "bancada": "bancada_audio",
+      "ano_inicial": 1890,
+      "decada": "1890s",
+      "preco": 12,
+      "venda": 6,
+      "desc": "Toca shellac com corneta e mola.",
+      "essenciais": [
+        {
+          "recurso": "metal_comum",
+          "qtd": 4
+        },
+        {
+          "recurso": "agulha_ceramica",
+          "qtd": 2
+        },
+        {
+          "recurso": "correia_borracha",
+          "qtd": 2
+        }
+      ],
+      "desbloqueios": [
+        "reproduzir_78"
+      ],
+      "tiers": [
+        {
+          "id": "basico",
+          "rotulo": "Básico",
+          "preco": 12,
+          "venda": 6,
+          "notas": "Corneta simples"
+        },
+        {
+          "id": "bom",
+          "rotulo": "Bom",
+          "preco": 18,
+          "venda": 8,
+          "notas": "Corneta maior, menos ruído"
+        },
+        {
+          "id": "pro",
+          "rotulo": "Pro",
+          "preco": 26,
+          "venda": 12,
+          "notas": "Braço equilibrado, prato pesado"
+        }
+      ]
+    },
+    {
+      "id": "radio_cristal",
+      "nome": "Rádio de Cristal (sem bateria)",
+      "tipo": "player",
+      "bancada": "bancada_eletronicos",
+      "ano_inicial": 1902,
+      "decada": "1900s",
+      "preco": 2,
+      "venda": 2,
+      "desc": "Receptor passivo AM; ouve-se com fone.",
+      "essenciais": [
+        {
+          "recurso": "fio_cobre",
+          "qtd": 2
+        },
+        {
+          "recurso": "metal_comum",
+          "qtd": 2
+        },
+        {
+          "recurso": "transdutor_audio",
+          "qtd": 2
+        }
+      ],
+      "desbloqueios": [
+        "reproduzir_radio"
+      ],
+      "tiers": [
+        {
+          "id": "basico",
+          "rotulo": "Básico",
+          "preco": 2,
+          "venda": 2,
+          "notas": "Antena simples"
+        },
+        {
+          "id": "bom",
+          "rotulo": "Bom",
+          "preco": 4,
+          "venda": 2,
+          "notas": "Bobina ajustável"
+        },
+        {
+          "id": "pro",
+          "rotulo": "Pro",
+          "preco": 6,
+          "venda": 2,
+          "notas": "Seleção fina, terra"
+        }
+      ]
+    },
+    {
+      "id": "vitrola",
+      "nome": "Vitrola (Toca-discos elétrico)",
+      "tipo": "player",
+      "bancada": "bancada_audio",
+      "ano_inicial": 1948,
+      "decada": "1940s",
+      "preco": 12,
+      "venda": 6,
+      "desc": "Toca LP/45 e alguns 78.",
+      "essenciais": [
+        {
+          "recurso": "metal_comum",
+          "qtd": 2
+        },
+        {
+          "recurso": "motor_dc",
+          "qtd": 2
+        },
+        {
+          "recurso": "correia_borracha",
+          "qtd": 2
+        },
+        {
+          "recurso": "modulo_leitor",
+          "qtd": 2,
+          "variante": "capsula_ceramica"
+        },
+        {
+          "recurso": "agulha_ceramica",
+          "qtd": 2
+        }
+      ],
+      "opcionais": [
+        {
+          "recurso": "modulo_leitor",
+          "qtd": 2,
+          "variante": "capsula_magnetica",
+          "nota": "Fidelidade"
+        },
+        {
+          "recurso": "silicio_pcb",
+          "qtd": 2,
+          "nota": "Pré-amp"
+        }
+      ],
+      "desbloqueios": [
+        "reproduzir_vinil"
+      ],
+      "tiers": [
+        {
+          "id": "basico",
+          "rotulo": "Básico",
+          "preco": 12,
+          "venda": 6,
+          "notas": "Tração por correia"
+        },
+        {
+          "id": "bom",
+          "rotulo": "Bom",
+          "preco": 18,
+          "venda": 8,
+          "notas": "Braço melhor, cápsula magnética"
+        },
+        {
+          "id": "pro",
+          "rotulo": "Pro",
+          "preco": 28,
+          "venda": 14,
+          "notas": "Prato pesado, pitch"
+        }
+      ]
+    },
+    {
+      "id": "gravador_fio",
+      "nome": "Gravador de Fio Magnético",
+      "tipo": "player",
+      "bancada": "bancada_fitas",
+      "ano_inicial": 1947,
+      "decada": "1940s",
+      "preco": 10,
+      "venda": 4,
+      "desc": "Grava/reproduz em fio de aço.",
+      "essenciais": [
+        {
+          "recurso": "metal_comum",
+          "qtd": 2
+        },
+        {
+          "recurso": "motor_dc",
+          "qtd": 2
+        },
+        {
+          "recurso": "modulo_leitor",
+          "qtd": 2,
+          "variante": "cabecote_magnetico"
+        }
+      ],
+      "desbloqueios": [
+        "reproduzir_fio",
+        "gravar_fio"
+      ],
+      "tiers": [
+        {
+          "id": "basico",
+          "rotulo": "Básico",
+          "preco": 10,
+          "venda": 4,
+          "notas": "Mono"
+        },
+        {
+          "id": "bom",
+          "rotulo": "Bom",
+          "preco": 14,
+          "venda": 6,
+          "notas": "Velocidade estável"
+        },
+        {
+          "id": "pro",
+          "rotulo": "Pro",
+          "preco": 20,
+          "venda": 10,
+          "notas": "Pré-amp e VU"
+        }
+      ]
+    },
+    {
+      "id": "deck_rolo",
+      "nome": "Deck de Rolo (Reel-to-Reel)",
+      "tipo": "player",
+      "bancada": "bancada_fitas",
+      "ano_inicial": 1945,
+      "decada": "1940s",
+      "preco": 14,
+      "venda": 6,
+      "desc": "Alta fidelidade em fita; gravação de estúdio.",
+      "essenciais": [
+        {
+          "recurso": "metal_comum",
+          "qtd": 2
+        },
+        {
+          "recurso": "motor_dc",
+          "qtd": 2
+        },
+        {
+          "recurso": "correia_borracha",
+          "qtd": 2
+        },
+        {
+          "recurso": "modulo_leitor",
+          "qtd": 2,
+          "variante": "cabecote_magnetico"
+        },
+        {
+          "recurso": "silicio_pcb",
+          "qtd": 2
+        }
+      ],
+      "desbloqueios": [
+        "reproduzir_rolo",
+        "gravar_fita"
+      ],
+      "tiers": [
+        {
+          "id": "basico",
+          "rotulo": "Básico",
+          "preco": 14,
+          "venda": 6,
+          "notas": "2 pistas"
+        },
+        {
+          "id": "bom",
+          "rotulo": "Bom",
+          "preco": 22,
+          "venda": 10,
+          "notas": "4 pistas, Dolby"
+        },
+        {
+          "id": "pro",
+          "rotulo": "Pro",
+          "preco": 32,
+          "venda": 16,
+          "notas": "1/4",
+          "extra": "VU, transporte pesado"
+        }
+      ]
+    },
+    {
+      "id": "radio_transistorizado",
+      "nome": "Rádio Transistorizado",
+      "tipo": "player",
+      "bancada": "bancada_eletronicos",
+      "ano_inicial": 1954,
+      "decada": "1950s",
+      "preco": 6,
+      "venda": 2,
+      "desc": "Primeira geração de rádios de bolso.",
+      "essenciais": [
+        {
+          "recurso": "plastico",
+          "qtd": 2
+        },
+        {
+          "recurso": "silicio_pcb",
+          "qtd": 2
+        },
+        {
+          "recurso": "bateria_energia",
+          "qtd": 2
+        },
+        {
+          "recurso": "transdutor_audio",
+          "qtd": 2
+        },
+        {
+          "recurso": "fio_cobre",
+          "qtd": 2
+        }
+      ],
+      "desbloqueios": [
+        "reproduzir_radio"
+      ],
+      "tiers": [
+        {
+          "id": "basico",
+          "rotulo": "Básico",
+          "preco": 6,
+          "venda": 2,
+          "notas": "AM"
+        },
+        {
+          "id": "bom",
+          "rotulo": "Bom",
+          "preco": 8,
+          "venda": 4,
+          "notas": "AM/FM"
+        },
+        {
+          "id": "pro",
+          "rotulo": "Pro",
+          "preco": 12,
+          "venda": 6,
+          "notas": "Sintonia fina"
+        }
+      ]
+    },
+    {
+      "id": "gravador_microcassete",
+      "nome": "Gravador Microcassette",
+      "tipo": "player",
+      "bancada": "bancada_fitas",
+      "ano_inicial": 1969,
+      "decada": "1960s",
+      "preco": 8,
+      "venda": 4,
+      "desc": "Portátil para voz; grava/toca música.",
+      "essenciais": [
+        {
+          "recurso": "plastico",
+          "qtd": 2
+        },
+        {
+          "recurso": "motor_dc",
+          "qtd": 2
+        },
+        {
+          "recurso": "modulo_leitor",
+          "qtd": 2,
+          "variante": "cabecote_magnetico"
+        },
+        {
+          "recurso": "silicio_pcb",
+          "qtd": 2
+        },
+        {
+          "recurso": "bateria_energia",
+          "qtd": 2
+        }
+      ],
+      "desbloqueios": [
+        "reproduzir_microcassete",
+        "gravar_microcassete"
+      ],
+      "tiers": [
+        {
+          "id": "basico",
+          "rotulo": "Básico",
+          "preco": 8,
+          "venda": 4,
+          "notas": "Mic mono"
+        },
+        {
+          "id": "bom",
+          "rotulo": "Bom",
+          "preco": 12,
+          "venda": 6,
+          "notas": "AGC melhor"
+        },
+        {
+          "id": "pro",
+          "rotulo": "Pro",
+          "preco": 18,
+          "venda": 8,
+          "notas": "Entrada linha"
+        }
+      ]
+    },
+    {
+      "id": "player_8_track",
+      "nome": "Player 8-Track",
+      "tipo": "player",
+      "bancada": "bancada_fitas",
+      "ano_inicial": 1965,
+      "decada": "1960s",
+      "preco": 8,
+      "venda": 4,
+      "desc": "Leitor de cartuchos em loop, popular em carros.",
+      "essenciais": [
+        {
+          "recurso": "plastico",
+          "qtd": 2
+        },
+        {
+          "recurso": "motor_dc",
+          "qtd": 2
+        },
+        {
+          "recurso": "modulo_leitor",
+          "qtd": 2,
+          "variante": "cabecote_magnetico"
+        },
+        {
+          "recurso": "bateria_energia",
+          "qtd": 2
+        }
+      ],
+      "desbloqueios": [
+        "reproduzir_8_track"
+      ],
+      "tiers": [
+        {
+          "id": "basico",
+          "rotulo": "Básico",
+          "preco": 8,
+          "venda": 4,
+          "notas": "Sem auto-reverse"
+        },
+        {
+          "id": "bom",
+          "rotulo": "Bom",
+          "preco": 12,
+          "venda": 6,
+          "notas": "Transporte melhor"
+        },
+        {
+          "id": "pro",
+          "rotulo": "Pro",
+          "preco": 18,
+          "venda": 8,
+          "notas": "Alinhamento de head"
+        }
+      ]
+    },
+    {
+      "id": "walkman",
+      "nome": "Walkman (Cassete Portátil)",
+      "tipo": "player",
+      "bancada": "bancada_eletronicos",
+      "ano_inicial": 1979,
+      "decada": "1970s",
+      "preco": 8,
+      "venda": 4,
+      "desc": "Estreia da escuta pessoal estéreo em movimento.",
+      "essenciais": [
+        {
+          "recurso": "plastico",
+          "qtd": 2
+        },
+        {
+          "recurso": "motor_dc",
+          "qtd": 2
+        },
+        {
+          "recurso": "correia_borracha",
+          "qtd": 2
+        },
+        {
+          "recurso": "modulo_leitor",
+          "qtd": 2,
+          "variante": "cabecote_magnetico"
+        },
+        {
+          "recurso": "silicio_pcb",
+          "qtd": 2
+        },
+        {
+          "recurso": "bateria_energia",
+          "qtd": 2
+        }
+      ],
+      "desbloqueios": [
+        "reproduzir_cassete"
+      ],
+      "tiers": [
+        {
+          "id": "basico",
+          "rotulo": "Básico",
+          "preco": 8,
+          "venda": 4,
+          "notas": "Fones simples"
+        },
+        {
+          "id": "bom",
+          "rotulo": "Bom",
+          "preco": 12,
+          "venda": 6,
+          "notas": "Dolby B"
+        },
+        {
+          "id": "pro",
+          "rotulo": "Pro",
+          "preco": 18,
+          "venda": 8,
+          "notas": "Gravação, metal tape"
+        }
+      ]
+    },
+    {
+      "id": "boombox",
+      "nome": "Boombox (Rádio + Fita/CD)",
+      "tipo": "player",
+      "bancada": "bancada_eletronicos",
+      "ano_inicial": 1976,
+      "decada": "1970s",
+      "preco": 10,
+      "venda": 4,
+      "desc": "Portátil com rádio e alto-falantes integrados.",
+      "essenciais": [
+        {
+          "recurso": "plastico",
+          "qtd": 2
+        },
+        {
+          "recurso": "silicio_pcb",
+          "qtd": 2
+        },
+        {
+          "recurso": "transdutor_audio",
+          "qtd": 4
+        },
+        {
+          "recurso": "bateria_energia",
+          "qtd": 2
+        }
+      ],
+      "desbloqueios": [
+        "reproduzir_radio",
+        "reproduzir_cassete",
+        "reproduzir_cd"
+      ],
+      "tiers": [
+        {
+          "id": "basico",
+          "rotulo": "Básico",
+          "preco": 10,
+          "venda": 4,
+          "notas": "Cassete simples"
+        },
+        {
+          "id": "bom",
+          "rotulo": "Bom",
+          "preco": 16,
+          "venda": 8,
+          "notas": "Duplo deck, CD"
+        },
+        {
+          "id": "pro",
+          "rotulo": "Pro",
+          "preco": 24,
+          "venda": 12,
+          "notas": "Alta potência"
+        }
+      ]
+    },
+    {
+      "id": "mini_sistema",
+      "nome": "Mini Sistema",
+      "tipo": "player",
+      "bancada": "bancada_eletronicos",
+      "ano_inicial": 1980,
+      "decada": "1980s",
+      "preco": 12,
+      "venda": 6,
+      "desc": "Hi‑fi compacto de sala com CD/fita.",
+      "essenciais": [
+        {
+          "recurso": "plastico",
+          "qtd": 2
+        },
+        {
+          "recurso": "metal_comum",
+          "qtd": 2
+        },
+        {
+          "recurso": "silicio_pcb",
+          "qtd": 2
+        },
+        {
+          "recurso": "transdutor_audio",
+          "qtd": 4
+        },
+        {
+          "recurso": "bateria_energia",
+          "qtd": 2
+        }
+      ],
+      "desbloqueios": [
+        "amplificar_audio",
+        "reproduzir_cassete",
+        "reproduzir_cd"
+      ],
+      "tiers": [
+        {
+          "id": "basico",
+          "rotulo": "Básico",
+          "preco": 12,
+          "venda": 6,
+          "notas": "2 caixas pequenas"
+        },
+        {
+          "id": "bom",
+          "rotulo": "Bom",
+          "preco": 18,
+          "venda": 8,
+          "notas": "Graves melhores"
+        },
+        {
+          "id": "pro",
+          "rotulo": "Pro",
+          "preco": 28,
+          "venda": 14,
+          "notas": "DAC melhor"
+        }
+      ]
+    },
+    {
+      "id": "discman",
+      "nome": "Discman (CD Portátil)",
+      "tipo": "player",
+      "bancada": "bancada_eletronicos",
+      "ano_inicial": 1984,
+      "decada": "1980s",
+      "preco": 8,
+      "venda": 4,
+      "desc": "Leitor de CD portátil.",
+      "essenciais": [
+        {
+          "recurso": "plastico",
+          "qtd": 2
+        },
+        {
+          "recurso": "motor_dc",
+          "qtd": 2
+        },
+        {
+          "recurso": "modulo_leitor",
+          "qtd": 2,
+          "variante": "pickup_optico"
+        },
+        {
+          "recurso": "silicio_pcb",
+          "qtd": 2
+        },
+        {
+          "recurso": "bateria_energia",
+          "qtd": 2
+        }
+      ],
+      "desbloqueios": [
+        "reproduzir_cd"
+      ],
+      "tiers": [
+        {
+          "id": "basico",
+          "rotulo": "Básico",
+          "preco": 8,
+          "venda": 4,
+          "notas": "Antichoque baixo"
+        },
+        {
+          "id": "bom",
+          "rotulo": "Bom",
+          "preco": 12,
+          "venda": 6,
+          "notas": "Antichoque 10–20s"
+        },
+        {
+          "id": "pro",
+          "rotulo": "Pro",
+          "preco": 18,
+          "venda": 8,
+          "notas": "Line‑out, DAC melhor"
+        }
+      ]
+    },
+    {
+      "id": "deck_dat",
+      "nome": "Deck DAT",
+      "tipo": "player",
+      "bancada": "bancada_fitas",
+      "ano_inicial": 1987,
+      "decada": "1980s",
+      "preco": 16,
+      "venda": 8,
+      "desc": "Gravador/reprodutor DAT hi‑res.",
+      "essenciais": [
+        {
+          "recurso": "metal_comum",
+          "qtd": 2
+        },
+        {
+          "recurso": "motor_dc",
+          "qtd": 2
+        },
+        {
+          "recurso": "modulo_leitor",
+          "qtd": 2,
+          "variante": "cabecote_helicoidal"
+        },
+        {
+          "recurso": "silicio_pcb",
+          "qtd": 2
+        },
+        {
+          "recurso": "bateria_energia",
+          "qtd": 2
+        }
+      ],
+      "desbloqueios": [
+        "reproduzir_dat",
+        "gravar_dat"
+      ],
+      "tiers": [
+        {
+          "id": "basico",
+          "rotulo": "Básico",
+          "preco": 16,
+          "venda": 8,
+          "notas": "16‑bit 48 kHz"
+        },
+        {
+          "id": "bom",
+          "rotulo": "Bom",
+          "preco": 24,
+          "venda": 12,
+          "notas": "Entradas digitais"
+        },
+        {
+          "id": "pro",
+          "rotulo": "Pro",
+          "preco": 36,
+          "venda": 18,
+          "notas": "Clock estável, VU"
+        }
+      ]
+    },
+    {
+      "id": "player_minidisc",
+      "nome": "Player MiniDisc",
+      "tipo": "player",
+      "bancada": "bancada_eletronicos",
+      "ano_inicial": 1992,
+      "decada": "1990s",
+      "preco": 10,
+      "venda": 4,
+      "desc": "Portátil regravável com edição (ATRAC).",
+      "essenciais": [
+        {
+          "recurso": "plastico",
+          "qtd": 2
+        },
+        {
+          "recurso": "modulo_leitor",
+          "qtd": 2,
+          "variante": "pickup_optico"
+        },
+        {
+          "recurso": "silicio_pcb",
+          "qtd": 2
+        },
+        {
+          "recurso": "bateria_energia",
+          "qtd": 2
+        },
+        {
+          "recurso": "transdutor_audio",
+          "qtd": 2
+        }
+      ],
+      "desbloqueios": [
+        "reproduzir_minidisc",
+        "gravar_minidisc"
+      ],
+      "tiers": [
+        {
+          "id": "basico",
+          "rotulo": "Básico",
+          "preco": 10,
+          "venda": 4,
+          "notas": "MD padrão"
+        },
+        {
+          "id": "bom",
+          "rotulo": "Bom",
+          "preco": 16,
+          "venda": 8,
+          "notas": "LP2/LP4"
+        },
+        {
+          "id": "pro",
+          "rotulo": "Pro",
+          "preco": 24,
+          "venda": 12,
+          "notas": "Hi‑MD/PCM"
+        }
+      ]
+    },
+    {
+      "id": "player_dcc",
+      "nome": "Player DCC",
+      "tipo": "player",
+      "bancada": "bancada_fitas",
+      "ano_inicial": 1992,
+      "decada": "1990s",
+      "preco": 12,
+      "venda": 6,
+      "desc": "Deck digital compatível com cassetes analógicas.",
+      "essenciais": [
+        {
+          "recurso": "plastico",
+          "qtd": 2
+        },
+        {
+          "recurso": "motor_dc",
+          "qtd": 2
+        },
+        {
+          "recurso": "modulo_leitor",
+          "qtd": 2,
+          "variante": "cabecote_magnetico"
+        },
+        {
+          "recurso": "silicio_pcb",
+          "qtd": 2
+        },
+        {
+          "recurso": "bateria_energia",
+          "qtd": 2
+        }
+      ],
+      "desbloqueios": [
+        "reproduzir_dcc"
+      ],
+      "tiers": [
+        {
+          "id": "basico",
+          "rotulo": "Básico",
+          "preco": 12,
+          "venda": 6,
+          "notas": "Playback DCC"
+        },
+        {
+          "id": "bom",
+          "rotulo": "Bom",
+          "preco": 18,
+          "venda": 8,
+          "notas": "Gravação DCC"
+        },
+        {
+          "id": "pro",
+          "rotulo": "Pro",
+          "preco": 26,
+          "venda": 12,
+          "notas": "I/O digital"
+        }
+      ]
+    },
+    {
+      "id": "computador",
+      "nome": "Computador",
+      "tipo": "player",
+      "bancada": "bancada_eletronicos",
+      "ano_inicial": 1997,
+      "decada": "1990s",
+      "preco": 14,
+      "venda": 6,
+      "desc": "Player/gestor de biblioteca digital.",
+      "essenciais": [
+        {
+          "recurso": "metal_comum",
+          "qtd": 2
+        },
+        {
+          "recurso": "plastico",
+          "qtd": 2
+        },
+        {
+          "recurso": "silicio_pcb",
+          "qtd": 2
+        },
+        {
+          "recurso": "bateria_energia",
+          "qtd": 2
+        }
+      ],
+      "desbloqueios": [
+        "reproduzir_digital",
+        "gerir_biblioteca"
+      ],
+      "tiers": [
+        {
+          "id": "basico",
+          "rotulo": "Básico",
+          "preco": 14,
+          "venda": 6,
+          "notas": "Som onboard"
+        },
+        {
+          "id": "bom",
+          "rotulo": "Bom",
+          "preco": 20,
+          "venda": 10,
+          "notas": "DAC melhor"
+        },
+        {
+          "id": "pro",
+          "rotulo": "Pro",
+          "preco": 30,
+          "venda": 14,
+          "notas": "Áudio dedicado"
+        }
+      ]
+    },
+    {
+      "id": "player_mp3",
+      "nome": "MP3 Player",
+      "tipo": "player",
+      "bancada": "bancada_eletronicos",
+      "ano_inicial": 1998,
+      "decada": "1990s",
+      "preco": 10,
+      "venda": 4,
+      "desc": "Reprodutor de arquivos digitais sólido‑estado.",
+      "essenciais": [
+        {
+          "recurso": "plastico",
+          "qtd": 2
+        },
+        {
+          "recurso": "silicio_pcb",
+          "qtd": 2
+        },
+        {
+          "recurso": "bateria_energia",
+          "qtd": 2
+        },
+        {
+          "recurso": "transdutor_audio",
+          "qtd": 2
+        }
+      ],
+      "desbloqueios": [
+        "reproduzir_digital_portatil"
+      ],
+      "tiers": [
+        {
+          "id": "basico",
+          "rotulo": "Básico",
+          "preco": 10,
+          "venda": 4,
+          "notas": "Memória limitada"
+        },
+        {
+          "id": "bom",
+          "rotulo": "Bom",
+          "preco": 16,
+          "venda": 8,
+          "notas": "Mais memória"
+        },
+        {
+          "id": "pro",
+          "rotulo": "Pro",
+          "preco": 24,
+          "venda": 12,
+          "notas": "Display/Playlists"
+        }
+      ]
+    },
+    {
+      "id": "ipod",
+      "nome": "iPod",
+      "tipo": "player",
+      "bancada": "bancada_eletronicos",
+      "ano_inicial": 2001,
+      "decada": "2000s",
+      "preco": 12,
+      "venda": 6,
+      "desc": "Player de HD com rolagem e integração de biblioteca.",
+      "essenciais": [
+        {
+          "recurso": "plastico",
+          "qtd": 2
+        },
+        {
+          "recurso": "silicio_pcb",
+          "qtd": 2
+        },
+        {
+          "recurso": "bateria_energia",
+          "qtd": 2
+        },
+        {
+          "recurso": "transdutor_audio",
+          "qtd": 2
+        }
+      ],
+      "desbloqueios": [
+        "reproduzir_digital_portatil",
+        "gerir_playlists"
+      ],
+      "tiers": [
+        {
+          "id": "basico",
+          "rotulo": "Básico",
+          "preco": 12,
+          "venda": 6,
+          "notas": "Gerações iniciais"
+        },
+        {
+          "id": "bom",
+          "rotulo": "Bom",
+          "preco": 18,
+          "venda": 8,
+          "notas": "Mais capacidade"
+        },
+        {
+          "id": "pro",
+          "rotulo": "Pro",
+          "preco": 28,
+          "venda": 14,
+          "notas": "Tela colorida, lossless"
+        }
+      ]
+    },
+    {
+      "id": "player_sacd_dvd_audio",
+      "nome": "Player SACD/DVD‑Audio",
+      "tipo": "player",
+      "bancada": "bancada_eletronicos",
+      "ano_inicial": 2000,
+      "decada": "2000s",
+      "preco": 14,
+      "venda": 6,
+      "desc": "Deck óptico hi‑res/multicanal.",
+      "essenciais": [
+        {
+          "recurso": "modulo_leitor",
+          "qtd": 2,
+          "variante": "pickup_optico"
+        },
+        {
+          "recurso": "silicio_pcb",
+          "qtd": 2
+        },
+        {
+          "recurso": "bateria_energia",
+          "qtd": 2
+        }
+      ],
+      "desbloqueios": [
+        "reproduzir_sacd",
+        "reproduzir_dvd_audio"
+      ],
+      "tiers": [
+        {
+          "id": "basico",
+          "rotulo": "Básico",
+          "preco": 14,
+          "venda": 6,
+          "notas": "Estéreo"
+        },
+        {
+          "id": "bom",
+          "rotulo": "Bom",
+          "preco": 22,
+          "venda": 10,
+          "notas": "Multicanal"
+        },
+        {
+          "id": "pro",
+          "rotulo": "Pro",
+          "preco": 32,
+          "venda": 16,
+          "notas": "DAC premium/HDMI"
+        }
+      ]
+    },
+    {
+      "id": "telefone_celular",
+      "nome": "Telefone (Celular)",
+      "tipo": "player",
+      "bancada": "bancada_eletronicos",
+      "ano_inicial": 2007,
+      "decada": "2000s",
+      "preco": 16,
+      "venda": 8,
+      "desc": "Smartphone com reprodução/streaming e gravação via mic.",
+      "essenciais": [
+        {
+          "recurso": "plastico",
+          "qtd": 2
+        },
+        {
+          "recurso": "silicio_pcb",
+          "qtd": 2
+        },
+        {
+          "recurso": "bateria_energia",
+          "qtd": 2
+        },
+        {
+          "recurso": "vidro_acrilico",
+          "qtd": 2
+        },
+        {
+          "recurso": "transdutor_audio",
+          "qtd": 2
+        }
+      ],
+      "desbloqueios": [
+        "reproduzir_digital_portatil",
+        "gravar_mic"
+      ],
+      "tiers": [
+        {
+          "id": "basico",
+          "rotulo": "Básico",
+          "preco": 16,
+          "venda": 8,
+          "notas": "Fone comum"
+        },
+        {
+          "id": "bom",
+          "rotulo": "Bom",
+          "preco": 24,
+          "venda": 12,
+          "notas": "Mais armazenamento"
+        },
+        {
+          "id": "pro",
+          "rotulo": "Pro",
+          "preco": 36,
+          "venda": 18,
+          "notas": "Hi‑res/BT avançado"
+        }
+      ]
+    }
+  ],
+  "midia_original": [
+    {
+      "id": "cilindro_fonografico",
+      "nome": "Cilindro Fonográfico",
+      "tipo": "armazenamento",
+      "bancada": "bancada_audio",
+      "ano_inicial": 1877,
+      "decada": "1870s",
+      "preco": 12,
+      "venda": 6,
+      "desc": "Primeira mídia comercial de áudio, leitura vertical.",
+      "essenciais": [
+        {
+          "recurso": "resina_shellac",
+          "qtd": 2
+        },
+        {
+          "recurso": "metal_comum",
+          "qtd": 2
+        },
+        {
+          "recurso": "correia_borracha",
+          "qtd": 2
+        }
+      ],
+      "opcionais": [
+        {
+          "recurso": "plastico",
+          "qtd": 2,
+          "nota": "Celuloide mais durável"
+        }
+      ],
+      "gravavel": false
+    },
+    {
+      "id": "disco_78_shellac",
+      "nome": "Disco 78 rpm (Shellac)",
+      "tipo": "armazenamento",
+      "bancada": "bancada_audio",
+      "ano_inicial": 1898,
+      "decada": "1890s",
+      "preco": 6,
+      "venda": 2,
+      "desc": "Discos de goma-laca que dominaram até meados do séc. XX.",
+      "essenciais": [
+        {
+          "recurso": "resina_shellac",
+          "qtd": 2
+        },
+        {
+          "recurso": "metal_comum",
+          "qtd": 2
+        },
+        {
+          "recurso": "correia_borracha",
+          "qtd": 2
+        }
+      ],
+      "gravavel": false
+    },
+    {
+      "id": "fio_magnetico",
+      "nome": "Fio Magnético (Wire)",
+      "tipo": "armazenamento",
+      "bancada": "bancada_fitas",
+      "ano_inicial": 1898,
+      "decada": "1890s",
+      "preco": 6,
+      "venda": 2,
+      "desc": "Carretel de fio de aço para gravações magnéticas precoces.",
+      "essenciais": [
+        {
+          "recurso": "metal_comum",
+          "qtd": 2
+        },
+        {
+          "recurso": "plastico",
+          "qtd": 2
+        },
+        {
+          "recurso": "polimero_magnetico",
+          "qtd": 2
+        }
+      ],
+      "gravavel": true,
+      "genero": [
+        "pop",
+        "rock",
+        "rnb",
+        "hiphop",
+        "metal",
+        "punk",
+        "hardcore",
+        "jazz",
+        "blues",
+        "mpb"
+      ]
+    },
+    {
+      "id": "fita_rolo",
+      "nome": "Fita Rolo (Reel-to-Reel)",
+      "tipo": "armazenamento",
+      "bancada": "bancada_fitas",
+      "ano_inicial": 1935,
+      "decada": "1930s",
+      "preco": 8,
+      "venda": 4,
+      "desc": "Fita magnética em rolos; alta qualidade.",
+      "essenciais": [
+        {
+          "recurso": "polimero_magnetico",
+          "qtd": 2
+        },
+        {
+          "recurso": "plastico",
+          "qtd": 2
+        },
+        {
+          "recurso": "metal_comum",
+          "qtd": 2
+        }
+      ],
+      "gravavel": true,
+      "genero": [
+        "pop",
+        "rock",
+        "rnb",
+        "hiphop",
+        "metal",
+        "punk",
+        "hardcore",
+        "jazz",
+        "blues",
+        "mpb"
+      ]
+    },
+    {
+      "id": "disco_vinil",
+      "nome": "Disco de Vinil (LP/Single)",
+      "tipo": "armazenamento",
+      "bancada": "bancada_audio",
+      "ano_inicial": 1948,
+      "decada": "1940s",
+      "preco": 6,
+      "venda": 2,
+      "desc": "LP 33⅓ e Single 45 rpm; padrão do álbum.",
+      "essenciais": [
+        {
+          "recurso": "vinil_pvc",
+          "qtd": 2
+        },
+        {
+          "recurso": "metal_comum",
+          "qtd": 2
+        },
+        {
+          "recurso": "correia_borracha",
+          "qtd": 2
+        }
+      ],
+      "gravavel": false
+    },
+    {
+      "id": "fita_cassete",
+      "nome": "Fita Cassette",
+      "tipo": "armazenamento",
+      "bancada": "bancada_fitas",
+      "ano_inicial": 1963,
+      "decada": "1960s",
+      "preco": 4,
+      "venda": 2,
+      "desc": "Formato compacto para música e mixtapes.",
+      "essenciais": [
+        {
+          "recurso": "plastico",
+          "qtd": 2
+        },
+        {
+          "recurso": "polimero_magnetico",
+          "qtd": 2
+        },
+        {
+          "recurso": "metal_comum",
+          "qtd": 2
+        }
+      ],
+      "gravavel": true,
+      "genero": [
+        "pop",
+        "rock",
+        "rnb",
+        "hiphop",
+        "metal",
+        "punk",
+        "hardcore",
+        "jazz",
+        "blues",
+        "mpb"
+      ]
+    },
+    {
+      "id": "microcassete",
+      "nome": "Microcassette",
+      "tipo": "armazenamento",
+      "bancada": "bancada_fitas",
+      "ano_inicial": 1969,
+      "decada": "1960s",
+      "preco": 2,
+      "venda": 2,
+      "desc": "Cassete miniaturizada (voz) que pode tocar música.",
+      "essenciais": [
+        {
+          "recurso": "plastico",
+          "qtd": 2
+        },
+        {
+          "recurso": "polimero_magnetico",
+          "qtd": 2
+        },
+        {
+          "recurso": "metal_comum",
+          "qtd": 2
+        }
+      ],
+      "gravavel": true,
+      "genero": [
+        "pop",
+        "rock",
+        "rnb",
+        "hiphop",
+        "metal",
+        "punk",
+        "hardcore",
+        "jazz",
+        "blues",
+        "mpb"
+      ]
+    },
+    {
+      "id": "cartucho_8_track",
+      "nome": "Cartucho 8-Track",
+      "tipo": "armazenamento",
+      "bancada": "bancada_fitas",
+      "ano_inicial": 1964,
+      "decada": "1960s",
+      "preco": 6,
+      "venda": 2,
+      "desc": "Cartucho em loop contínuo popular em carros.",
+      "essenciais": [
+        {
+          "recurso": "plastico",
+          "qtd": 2
+        },
+        {
+          "recurso": "polimero_magnetico",
+          "qtd": 2
+        },
+        {
+          "recurso": "metal_comum",
+          "qtd": 2
+        }
+      ],
+      "gravavel": false
+    },
+    {
+      "id": "elcaset",
+      "nome": "Elcaset",
+      "tipo": "armazenamento",
+      "bancada": "bancada_fitas",
+      "ano_inicial": 1976,
+      "decada": "1970s",
+      "preco": 8,
+      "venda": 4,
+      "desc": "Grande cassete com qualidade próxima ao rolo.",
+      "essenciais": [
+        {
+          "recurso": "plastico",
+          "qtd": 2
+        },
+        {
+          "recurso": "polimero_magnetico",
+          "qtd": 2
+        },
+        {
+          "recurso": "metal_comum",
+          "qtd": 2
+        }
+      ],
+      "gravavel": true,
+      "genero": [
+        "pop",
+        "rock",
+        "rnb",
+        "hiphop",
+        "metal",
+        "punk",
+        "hardcore",
+        "jazz",
+        "blues",
+        "mpb"
+      ]
+    },
+    {
+      "id": "cd_audio",
+      "nome": "CD (Compact Disc)",
+      "tipo": "armazenamento",
+      "bancada": "bancada_eletronicos",
+      "ano_inicial": 1982,
+      "decada": "1980s",
+      "preco": 4,
+      "venda": 2,
+      "desc": "Primeiro disco óptico de massa para áudio digital.",
+      "essenciais": [
+        {
+          "recurso": "policarbonato",
+          "qtd": 2
+        },
+        {
+          "recurso": "metal_comum",
+          "qtd": 2
+        },
+        {
+          "recurso": "plastico",
+          "qtd": 2
+        }
+      ],
+      "gravavel": false
+    },
+    {
+      "id": "fita_dat",
+      "nome": "DAT (Digital Audio Tape)",
+      "tipo": "armazenamento",
+      "bancada": "bancada_fitas",
+      "ano_inicial": 1987,
+      "decada": "1980s",
+      "preco": 10,
+      "venda": 4,
+      "desc": "Fita digital com cabeça helicoidal; uso pro e hi-fi.",
+      "essenciais": [
+        {
+          "recurso": "plastico",
+          "qtd": 2
+        },
+        {
+          "recurso": "polimero_magnetico",
+          "qtd": 2
+        },
+        {
+          "recurso": "metal_comum",
+          "qtd": 2
+        }
+      ],
+      "gravavel": true,
+      "genero": [
+        "pop",
+        "rock",
+        "rnb",
+        "hiphop",
+        "metal",
+        "punk",
+        "hardcore",
+        "jazz",
+        "blues",
+        "mpb"
+      ]
+    },
+    {
+      "id": "fita_dcc",
+      "nome": "DCC (Digital Compact Cassette)",
+      "tipo": "armazenamento",
+      "bancada": "bancada_fitas",
+      "ano_inicial": 1992,
+      "decada": "1990s",
+      "preco": 8,
+      "venda": 4,
+      "desc": "Cassete digital; alguns decks leem analógico.",
+      "essenciais": [
+        {
+          "recurso": "plastico",
+          "qtd": 2
+        },
+        {
+          "recurso": "polimero_magnetico",
+          "qtd": 2
+        },
+        {
+          "recurso": "metal_comum",
+          "qtd": 2
+        }
+      ],
+      "gravavel": true,
+      "genero": [
+        "pop",
+        "rock",
+        "rnb",
+        "hiphop",
+        "metal",
+        "punk",
+        "hardcore",
+        "jazz",
+        "blues",
+        "mpb"
+      ]
+    },
+    {
+      "id": "minidisc",
+      "nome": "MiniDisc",
+      "tipo": "armazenamento",
+      "bancada": "bancada_eletronicos",
+      "ano_inicial": 1992,
+      "decada": "1990s",
+      "preco": 6,
+      "venda": 2,
+      "desc": "Disco magneto-óptico regravável portátil.",
+      "essenciais": [
+        {
+          "recurso": "policarbonato",
+          "qtd": 2
+        },
+        {
+          "recurso": "metal_comum",
+          "qtd": 2
+        },
+        {
+          "recurso": "plastico",
+          "qtd": 2
+        }
+      ],
+      "gravavel": true,
+      "genero": [
+        "pop",
+        "rock",
+        "rnb",
+        "hiphop",
+        "metal",
+        "punk",
+        "hardcore",
+        "jazz",
+        "blues",
+        "mpb"
+      ]
+    },
+    {
+      "id": "disco_sacd",
+      "nome": "SACD",
+      "tipo": "armazenamento",
+      "bancada": "bancada_eletronicos",
+      "ano_inicial": 1999,
+      "decada": "1990s",
+      "preco": 10,
+      "venda": 4,
+      "desc": "Disco óptico DSD de alta fidelidade.",
+      "essenciais": [
+        {
+          "recurso": "policarbonato",
+          "qtd": 2
+        },
+        {
+          "recurso": "metal_comum",
+          "qtd": 2
+        },
+        {
+          "recurso": "plastico",
+          "qtd": 2
+        }
+      ],
+      "gravavel": false
+    },
+    {
+      "id": "disco_dvd_audio",
+      "nome": "DVD-Audio",
+      "tipo": "armazenamento",
+      "bancada": "bancada_eletronicos",
+      "ano_inicial": 2000,
+      "decada": "2000s",
+      "preco": 8,
+      "venda": 4,
+      "desc": "Disco óptico PCM de alta resolução/multicanal.",
+      "essenciais": [
+        {
+          "recurso": "policarbonato",
+          "qtd": 2
+        },
+        {
+          "recurso": "metal_comum",
+          "qtd": 2
+        },
+        {
+          "recurso": "plastico",
+          "qtd": 2
+        }
+      ],
+      "gravavel": false
+    }
+  ],
+  "midia_copia": {
+    "desc": "Instância de uma mídia física produzida/alterada no jogo (ex.: mixtape). Liga-se a uma 'midia_original' e carrega selo de gênero, estado e valor calculado.",
+    "campos": {
+      "id_original": "referência a midia_original[].id",
+      "qualidade": {
+        "tipo": "float",
+        "intervalo": [
+          0.0,
+          1.0
+        ],
+        "default": 1.0
+      },
+      "conservacao": {
+        "tipo": "float",
+        "intervalo": [
+          0.0,
+          1.0
+        ],
+        "default": 1.0
+      },
+      "genero": "gênero aplicável; deve existir em midia_original[].generos_suportados quando 'gravavel' for true"
+    },
+    "economia": {
+      "valor_base_venda": "lookup(midia_original[id_original].venda)",
+      "multiplicador_genero": "valor_mod do gênero em raridade_genero",
+      "bonus_evento": "ex.: +0.2 se houver evento para o gênero",
+      "bonus_lojista": "ex.: +0.25 em loja especializada do gênero",
+      "formula_avaliacao": "valor_avaliado = max(1, floor(valor_base_venda * multiplicador_genero * (1 + bonus_evento) * (1 + bonus_lojista)))",
+      "formula_valor_final_venda": "valor_final_venda = floor(valor_avaliado * mod_qualidade * mod_conservacao)"
+    }
+  },
+  "estado_item": {
+    "qualidade": [
+      {
+        "id": "ruim",
+        "faixa": [
+          0.0,
+          0.39
+        ],
+        "mod": 0.65,
+        "desc": "Gravação de baixa fidelidade ou defeituosa."
+      },
+      {
+        "id": "lofi",
+        "faixa": [
+          0.4,
+          0.59
+        ],
+        "mod": 0.85,
+        "desc": "Qualidade baixa com ruído/perdas."
+      },
+      {
+        "id": "normal",
+        "faixa": [
+          0.6,
+          0.79
+        ],
+        "mod": 1.0,
+        "desc": "Qualidade aceitável para uso geral."
+      },
+      {
+        "id": "hifi",
+        "faixa": [
+          0.8,
+          0.94
+        ],
+        "mod": 1.15,
+        "desc": "Alta fidelidade com boa dinâmica."
+      },
+      {
+        "id": "studio",
+        "faixa": [
+          0.95,
+          1.0
+        ],
+        "mod": 1.3,
+        "desc": "Qualidade de estúdio, referência."
+      }
+    ],
+    "conservacao": [
+      {
+        "id": "arranhado",
+        "faixa": [
+          0.0,
+          0.29
+        ],
+        "mod": 0.5,
+        "desc": "Marcas profundas; pode pular/ruir."
+      },
+      {
+        "id": "amassado",
+        "faixa": [
+          0.3,
+          0.49
+        ],
+        "mod": 0.7,
+        "desc": "Deformações leves a moderadas."
+      },
+      {
+        "id": "rachado",
+        "faixa": [
+          0.5,
+          0.69
+        ],
+        "mod": 0.85,
+        "desc": "Rachaduras pequenas que impactam uso."
+      },
+      {
+        "id": "trincado",
+        "faixa": [
+          0.7,
+          0.89
+        ],
+        "mod": 0.95,
+        "desc": "Trincas leves; ainda funcional."
+      },
+      {
+        "id": "quebrado",
+        "faixa": [
+          0.9,
+          1.0
+        ],
+        "mod": 1.05,
+        "desc": "Sem danos visíveis; perfeitamente íntegro."
+      }
+    ]
+  }
+}
